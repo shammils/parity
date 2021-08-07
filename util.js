@@ -3,6 +3,7 @@ const readline = require('readline')
 const fs = require('fs-extra')
 const path = require('path')
 const chalk = require('chalk')
+const spawn = require('child_process').spawn;
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -52,12 +53,16 @@ const api = {
     })
     return promise;
   },
+  delay: ms =>
+    new Promise(resolve =>
+      setTimeout(() => resolve(), ms)),
   delete: async (type, items, targetDir, existingLog = null) => {
     let log
     if (items.length) {
       for (let i = 0; i < items.length; i++) {
         const fp = path.join(targetDir, items[i])
         await fs.remove(fp)
+        await delay(100)
         log = `${existingLog != null ? existingLog+'\n' : ''}${i+1}/${items.length} ${type}s ${chalk.red('deleted')} '${fp}'`
         api.print(log)
       }
@@ -73,7 +78,12 @@ const api = {
       for (let i = 0; i < items.length; i++) {
         const sp = path.join(sourceDir, items[i])
         const tp = path.join(targetDir, items[i])
-        await fs.copy(sp, tp)
+        if (type === 'folder') await fs.ensureDir(tp)
+        else {
+          await api.copyFile(sp, tp)
+          //await fs.copy(sp, tp)
+        }
+        await api.delay(200)
         log = `${existingLog != null ? existingLog+'\n' : ''}${i+1}/${items.length} ${type}s ${intention}d '${tp}'`
         api.print(log)
       }
@@ -83,12 +93,25 @@ const api = {
     }
     return log
   },
-  // going to give FS a shot this time instead of using 'cp', 'rm' and 'rm -rf'
-  // but im leaving these here for some reason
-  crupdateFile: async (filePath) => {throw 'NotImplemented'},
-  deleteFile: async (filePath) => {throw 'NotImplemented'},
-  createFolder: async (folderPath) => {throw 'NotImplemented'},
-  deleteFolder: async (folderPath) => {throw 'NotImplemented'},
+  copyFile: (from, to) => {
+    const promise = new Promise((resolve, reject) => {
+      const p = spawn('cp', [from, to]);
+      p.stdout.on('data', (data) => {
+        //console.log(`stdout: ${data}`);
+      });
+      p.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+      });
+      p.on('close', (code) => {
+        if (code === 0) resolve();
+        else {
+          console.log(`received code ${code} attempting to copy file ${from},${to}`)
+          resolve();
+        }
+      });
+    });
+    return promise;
+  }
 }
 
 module.exports = api

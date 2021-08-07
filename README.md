@@ -9,8 +9,19 @@ SOURCEDIR=C:\Users\<username>\Downloads TARGETDIR=C:\Windows\System32 node index
 TODO:
   - create html file
   - clean up console output
-  
-im pretty sure im just wasting my precious fucking time at this point.
+  - for the update metric, output the difference in bytes(up and down), not just
+    the total
+  - is there a way to detect if a drive is busy? probably not... might need to
+    call some linux tool. currently the read drive is maxed out on its IOPS but
+    the write drive is fine. Need to delay after the scan first of all
+    It created 1358 folders in less than a millisecond, so putting a delay in the
+    crupdate function(ISSUE: it was fs-extra copy, replaced that and it works)
+  - add file size and time elapsed to apply function. how the fuck did you forget
+    that of all things
+#### Issues
+- fs-extra copy is getting locked up on tiny files. moving to linux 'cp' command
+  fixed it. I didnt want to make it linux only but it is what it is. Need to see
+  now fs-extra delete performs in real usage
 
 ISSUE
 Need to keep certain folders up to date with folders on other drives/locations, not the entire drive. Drive cloning hardware requires like kind drives. Screw other software.
