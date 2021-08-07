@@ -1,11 +1,15 @@
-#HOW TO USE
+# HOW TO USE
 on linux(run as su):
 SOURCEDIR=/home/<username>/Downloads TARGETDIR=/boot node index.js
 
 on windows(run as admin):
 SOURCEDIR=C:\Users\<username>\Downloads TARGETDIR=C:\Windows\System32 node index.js
 
-#Personal Notes
+# Personal Notes
+TODO:
+  - create html file
+  - clean up console output
+  
 im pretty sure im just wasting my precious fucking time at this point.
 
 ISSUE

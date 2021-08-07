@@ -13,8 +13,6 @@ const path = require('path')
     - etc
 */
 
-process.env.SOURCEDIR = '/home/watashino/projects/parity/test_source'
-process.env.TARGETDIR = '/home/watashino/projects/parity/test_target'
 const sourceDir = process.env.SOURCEDIR
 const targetDir = process.env.TARGETDIR
 const scanResults = {
